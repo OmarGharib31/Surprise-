@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ليكي يا منه</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0a0a0f; --ink:#f6f3f1; --muted:rgba(246,243,241,.6); --a:#ff4d79; --b:#ff8a5c;
+  box-sizing:border-box;
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{
+  background:var(--bg);color:var(--ink);font-family:"Cairo",system-ui,sans-serif;
+  overflow:hidden;-webkit-tap-highlight-color:transparent;
+}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none}
+.o1{width:60vmax;height:60vmax;background:var(--a);top:-30vmax;right:-25vmax;opacity:.28;animation:f1 18s ease-in-out infinite alternate}
+.o2{width:55vmax;height:55vmax;background:var(--b);bottom:-30vmax;left:-25vmax;opacity:.2;animation:f2 22s ease-in-out infinite alternate}
+@keyframes f1{to{transform:translate(-10vmax,10vmax)}}
+@keyframes f2{to{transform:translate(10vmax,-8vmax)}}
+
+/* layout: column on portrait, row on wide/landscape */
+.app{
+  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);
+  height:100vh;height:100dvh;
+}
+.stage{flex:1 1 0;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;padding:16px}
+.heart{position:relative;height:min(100%,420px);max-width:min(80vw,440px);aspect-ratio:100/90;
+  transition:transform .25s ease-out;will-change:transform}
+.heart svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 26px rgba(255,77,121,.5))}
+.heart path{fill:url(#fg);fill-opacity:0;stroke:url(#sg);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:1;stroke-dashoffset:1;transition:fill-opacity 1.6s ease}
+.heart.go path{animation:draw 2.4s cubic-bezier(.6,.1,.2,1) forwards}
+.heart.fill path{fill-opacity:.15}
+.heart.fill svg{animation:pulse 1.6s ease-in-out infinite;transform-origin:50% 50%}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pulse{0%,100%{transform:scale(1)}15%{transform:scale(1.05)}30%{transform:scale(1)}45%{transform:scale(1.03)}}
+#name{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-bottom:6%;
+  font-weight:800;font-size:clamp(2.6rem,17cqh,6.5rem);line-height:1;
+  background:linear-gradient(180deg,#fff,#ffc9b8);-webkit-background-clip:text;background-clip:text;color:transparent;
+  opacity:0;transform:scale(.9);transition:opacity 1.2s ease,transform 1.2s cubic-bezier(.2,.8,.2,1)
+}
+.heart{container-type:size}
+#name.on{opacity:1;transform:none}
+
+.card{
+  position:relative;z-index:2;width:calc(100% - 32px);max-width:34rem;margin:0 0 16px;
+  padding:clamp(18px,3.2vh,28px) clamp(16px,4vw,28px) 18px;border-radius:28px;text-align:center;
+  background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);
+  box-shadow:0 24px 70px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12);
+  display:flex;flex-direction:column;align-items:center;gap:clamp(10px,2vh,16px);
+  opacity:0;transform:translateY(20px);transition:opacity .9s ease,transform .9s ease
+}
+.card.on{opacity:1;transform:none}
+.bar{width:100%;height:3px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b));border-radius:3px;transition:width .7s ease}
+#line{
+  font-weight:600;font-size:clamp(1.05rem,2.4vw + .6rem,1.6rem);line-height:1.85;margin:0;
+  min-height:calc(1.85em * 3);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;column-gap:.3em
+}
+#line span{opacity:0;transform:translateY(8px);filter:blur(5px);transition:opacity .6s ease,transform .6s ease,filter .6s ease}
+#line span.in{opacity:1;transform:none;filter:none}
+#line.final{background:linear-gradient(90deg,#ff8aa8,#ffb48a,#ff8aa8);background-size:200% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 4s linear infinite}
+@keyframes shine{to{background-position:-200% 0}}
+#sign{margin:-4px 0 0;font-weight:600;font-size:1.05rem;color:var(--muted);opacity:0;transition:opacity 1.2s ease;min-height:1.6em}
+#sign.on{opacity:1}
+button{
+  font:inherit;font-weight:600;font-size:1rem;color:#fff;border:0;border-radius:999px;padding:12px 44px;cursor:pointer;
+  background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 10px 28px rgba(255,77,121,.35);
+  transition:transform .15s ease,opacity .3s ease
+}
+button:hover{transform:translateY(-1px)}
+button:active{transform:scale(.96)}
+button:disabled{opacity:.3;cursor:default;transform:none}
+button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+/* floating words */
+#fx{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:5}
+#fx b{
+  position:absolute;bottom:-12vh;font-weight:800;white-space:nowrap;
+  background:linear-gradient(180deg,#fff,#ff9ab8);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 14px rgba(255,77,121,.6));
+  opacity:0;animation:rise var(--d) ease-out var(--t) forwards
+}
+@keyframes rise{
+  0%{opacity:0;transform:translateY(0) scale(.7)}
+  12%{opacity:1}
+  80%{opacity:.9}
+  100%{opacity:0;transform:translateY(-118vh) translateX(var(--x)) scale(1.1)}
+}
+
+#intro{
+  position:fixed;inset:0;z-index:10;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;
+  transition:opacity .9s ease
+}
+#intro.out{opacity:0;pointer-events:none}
+#intro h1{margin:0;font-weight:800;font-size:clamp(2.2rem,9vw,4rem);
+  background:linear-gradient(90deg,#ff8aa8,#ffb48a);-webkit-background-clip:text;background-clip:text;color:transparent}
+#intro p{margin:0 0 8px;color:var(--muted);font-size:clamp(1rem,2.4vw,1.2rem)}
+
+/* wide screens and landscape phones: side by side */
+@media (min-aspect-ratio:13/10){
+  .app{flex-direction:row;justify-content:center;gap:clamp(16px,4vw,64px);padding-inline:clamp(16px,4vw,64px)}
+  .stage{flex:1 1 45%;height:100%;padding:16px 0}
+  .card{flex:1 1 45%;margin:0;width:auto;max-width:36rem;align-self:center}
+}
+@media (max-height:430px){
+  #line{min-height:calc(1.85em * 2);font-size:1.05rem}
+  .card{padding:14px 16px;gap:8px}
+}
+@media (prefers-reduced-motion:reduce){
+  .orb,.heart.fill svg,#line.final{animation:none}
+  .heart.go path{animation-duration:.01s}
+  #name,#sign,#intro,.card,button,#line span,.bar i{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div>
+<div class="app">
+  <div class="stage">
+    <div class="heart" id="heart" aria-hidden="true">
+      <svg viewBox="0 0 100 90">
+        <defs>
+          <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff4d79"/><stop offset="1" stop-color="#ff9a6b"/></linearGradient>
+          <linearGradient id="fg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff4d79"/><stop offset="1" stop-color="#ff8a5c"/></linearGradient>
+        </defs>
+        <path pathLength="1" d="M50 84C20 62 5 46 5 29 5 16 15 7 28 7c9 0 18 5 22 14 4-9 13-14 22-14 13 0 23 9 23 22 0 17-15 33-45 55z"/>
+      </svg>
+      <div id="name">منه</div>
+    </div>
+  </div>
+  <div class="card" id="card">
+    <div class="bar"><i id="prog"></i></div>
+    <p id="line" aria-live="polite"></p>
+    <p id="sign">عمر</p>
+    <button id="next" type="button">كمّلي</button>
+  </div>
+</div>
+<div id="fx" aria-hidden="true"></div>
+<div id="intro">
+  <h1>ليكي يا منه</h1>
+  <p>في حاجة صغيرة عملتهالك</p>
+  <button id="open" type="button">افتحي</button>
+</div>
+<script>
+(function(){
+  var LINES=[
+    "يا منه… في كلام كتير جوايا، وكل مرة بحاول أقوله بيطلع أقل من اللي حاسس بيه.",
+    "فقلت أعملك حاجة بإيدي، تبقى ليكي إنتي وبس.",
+    "وجودك بيخلي أبسط يوم في حياتي ليه معنى وطعم تاني.",
+    "ضحكتك أحلى حاجة بتحصل في يومي، وبتنسيني أي تعب.",
+    "شكرًا إنك جنبي، وإنك بتستحمليني وبتفهميني حتى من غير ما أتكلم.",
+    "وعد مني أفضل أحاول أبقى أحسن علشانك كل يوم.",
+    "بحبك يا منه، وهفضل أحبك، وهعمل اللي عليا علشان أتجوزك."
+  ];
+  var WORDS=["ععععععععع","بحببككككككككك"];
+  var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var $=function(i){return document.getElementById(i)};
+  var heart=$("heart"),nameEl=$("name"),card=$("card"),line=$("line"),btn=$("next"),
+      sign=$("sign"),prog=$("prog"),intro=$("intro"),fx=$("fx");
+
+  function floatWords(){
+    if(reduce)return;
+    fx.textContent="";
+    var n=innerWidth<600?12:18;
+    for(var i=0;i<n;i++){
+      var b=document.createElement("b");
+      b.textContent=WORDS[i%2];
+      b.style.right=(4+Math.random()*80)+"vw";
+      b.style.fontSize=(1.4+Math.random()*1.8)+"rem";
+      b.style.setProperty("--d",(5+Math.random()*3)+"s");
+      b.style.setProperty("--t",(i*0.28)+"s");
+      b.style.setProperty("--x",((Math.random()-.5)*14)+"vw");
+      fx.appendChild(b);
+    }
+  }
+
+  var idx=-1,timers=[],done=false;
+  function reveal(txt,cb){
+    timers.forEach(clearTimeout);timers=[];line.textContent="";
+    var spans=txt.split(" ").map(function(w){var s=document.createElement("span");s.textContent=w;line.appendChild(s);return s});
+    if(reduce){spans.forEach(function(s){s.className="in"});cb();return}
+    spans.forEach(function(s,i){timers.push(setTimeout(function(){s.className="in"},i*150))});
+    timers.push(setTimeout(cb,spans.length*150+450));
+  }
+  function show(){
+    if(done){floatWords();return}
+    idx++;
+    var last=idx===LINES.length-1;
+    line.className=last?"final":"";
+    prog.style.width=((idx+1)/LINES.length*100)+"%";
+    btn.disabled=true;
+    reveal(LINES[idx],function(){
+      btn.disabled=false;
+      if(last){btn.textContent="وأنا كمان بحبك";sign.className="on";done=true;floatWords()}
+    });
+  }
+  btn.addEventListener("click",show);
+
+  $("open").addEventListener("click",function(){
+    intro.className="out";heart.className="heart go";
+    setTimeout(function(){heart.className="heart go fill";nameEl.className="on"},reduce?0:1900);
+    setTimeout(function(){card.className="card on"},reduce?0:900);
+    setTimeout(show,reduce?0:1700);
+  });
+
+  /* subtle parallax tilt */
+  if(!reduce&&matchMedia("(hover:hover)").matches){
+    addEventListener("pointermove",function(e){
+      var x=(e.clientX/innerWidth-.5)*10,y=(e.clientY/innerHeight-.5)*10;
+      heart.style.transform="translate("+x+"px,"+y+"px)";
+    });
+  }
+})();
+</script>
+</body>
+</html>
